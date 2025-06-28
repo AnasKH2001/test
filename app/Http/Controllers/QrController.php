@@ -10,48 +10,12 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class QrController extends Controller
 {
-    //
-
-    // public function generate()
-    // {
-    //     // Simple QR code generation
-    //     return QrCode::size(200)->generate('Hello World!');
-        
-    //     // For PDF generation (if you have dompdf installed)
-    //     // $qrCode = QrCode::size(200)->generate('Hello World!');
-    //     // $pdf = PDF::loadView('qr', compact('qrCode'));
-    //     // return $pdf->stream();
-    // }
-
     public function showForm()
     {
         return view('qr-form');
     }
-
-    // public function generatePdf(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'message' => 'required|string'
-    //     ]);
-
-    //     $name = $request->input('name');
-    //     $message = $request->input('message');
-
-    //     // Generate QR code with the name
-    //     $qrCode = QrCode::size(200)->generate($name);
-
-    //     // Generate PDF
-    //     $pdf = Pdf::loadView('qr-pdf', [
-    //         'name' => $name,
-    //         'message' => $message,
-    //         'qrCode' => $qrCode
-    //     ]);
-
-    //     return $pdf->download('message-for-'.$name.'.pdf');
-    // }
-
-    public function generatePdf(Request $request)
+   
+    public function generatePdfApi(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -74,10 +38,12 @@ class QrController extends Controller
             'qrImage' => $qrBase64 // Pass base64 instead of SVG
         ]);
 
-        return $pdf->download('message-for-'.$name.'.pdf');
+        // return $pdf->download('message-for-'.$name.'.pdf');
+    return response($pdf->output(), 200)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'inline; filename="message-for-' . $name . '.pdf"');
     }
-
-
+    
 }
 
 

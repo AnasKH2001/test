@@ -17,7 +17,7 @@ Route::get('/generate-pdf', [PDFController::class, 'generatePDF']);
 
 
 //Route::get('/qr', [QrController::class, 'generate']);
-Route::get('/qr-generator', [QrController::class, 'showForm']);
+// Route::get('/qr-generator', [QrController::class, 'showForm']);
 
 
 //POST
