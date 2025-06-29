@@ -19,3 +19,4 @@ Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum
 Route::post('provider/logout', [ProviderController::class, 'providerLogout'])
     ->middleware(['auth:sanctum', 'isProvider']);
 
+Route::post('provider/addService',[ProviderController::class,'addService'])  ->middleware(['auth:sanctum', 'isProvider']);
