@@ -6,6 +6,11 @@ use App\Http\Controllers\QrController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Api\VenueController;
+use App\Http\Controllers\Api\FoodController;
+use App\Http\Controllers\Api\MusicController;
+use App\Http\Controllers\Api\PhotographyController;
+
+
 
 
 Route::get('/user', function (Request $request) {
@@ -27,3 +32,6 @@ Route::post('provider/addService',[ProviderController::class,'addService'])  ->m
 
 
 Route::get('/venues', [VenueController::class, 'index']);
+Route::get('/food', [FoodController::class, 'index']);
+Route::get('/music', [MusicController::class, 'index']);
+Route::get('/photography', [PhotographyController::class, 'index']);
