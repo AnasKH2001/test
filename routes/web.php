@@ -12,6 +12,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+//testing QR and pdf
 Route::get('/generate-pdf', [PDFController::class, 'generatePDF']);
 
 
