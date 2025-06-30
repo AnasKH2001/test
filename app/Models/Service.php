@@ -14,9 +14,12 @@ class Service extends Model
         'description',
         'cost',
     ];
+   
 
     public function provider(): BelongsTo
     {
         return $this->belongsTo(Provider::class);
     }
+
+    
 }
