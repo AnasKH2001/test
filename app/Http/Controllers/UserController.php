@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Provider;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 //use Illuminate\Support\Facades\Auth;
 
@@ -16,29 +18,29 @@ class UserController extends Controller
     public function register(Request $request)
     {
        $request->validate([
-'name'=>'required|string|max:255',
 
-'role'=>'required|string|max:255',
-'email'=>'required|unique:users,email|email',
-'password'=>'required|string|min:5' ,
-
-
+          'name'=>'required|string|max:255',
+          'role'=>'required|string|max:255',
+          'email'=>'required|unique:users,email|email',
+          'password'=>'required|string|min:5' ,
 
        ]);
 
 
 
          $user= User ::create([
-            'name'=>$request->name,
-            'role'=>$request->role,
-            
-            
-           'email'=>$request->email,
-            'password'=>Hash::make($request->password),
 
+            'name'=>$request->name,
+            'role'=>$request->role, 
+            'email'=>$request->email,
+            'password'=>Hash::make($request->password),
              
           ]);
-          
+          if ($user->role === 'provider') {
+              Provider::create(['user_id' => $user->id]);
+          } elseif ($user->role === 'customer') {
+              Customer::create(['user_id' => $user->id]);
+          }
 
           return response()->json([
             
