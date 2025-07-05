@@ -9,11 +9,22 @@ class FoodController extends Controller
 {
     public function index()
     {
-        $food = Food::with('service')->get(); // optional: eager load service
+        $food = Food::with('service:id,id,cost')->get(); // optional: eager load service
+
+        $formatted = $food->map(function ($item) {
+        return [
+            'id' => $item->service->id,
+            'description' => $item->description,
+            'cost' => $item->service->cost ?? null,
+        ];
+        });
 
         return response()->json([
             'message' => 'Available Food Options',
-            'food' => $food
+            'food' => $formatted
         ]);
     }
 }
+
+
+
