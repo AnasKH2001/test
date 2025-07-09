@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'isProvider'=>Isprovider::class
+            'isProvider'=>IsProvider::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

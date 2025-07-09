@@ -21,5 +21,11 @@ class Service extends Model
         return $this->belongsTo(Provider::class);
     }
 
+    public function food() { return $this->hasOne(Food::class); }
+    public function venue() { return $this->hasOne(Venue::class); }
+    public function music() { return $this->hasOne(Music::class); }
+    public function photography() { return $this->hasOne(Photography::class); }
+
+
     
 }
