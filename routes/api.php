@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\FoodController;
 use App\Http\Controllers\Api\MusicController;
 use App\Http\Controllers\Api\PhotographyController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\AppointmentController;
 
 
 
@@ -44,9 +45,12 @@ Route::middleware(['auth:sanctum', 'isProvider'])->get('/services', [ServiceCont
 
 
 
+ Route::post('/appointments/request', [AppointmentController::class, 'requestAppointment'])->middleware('auth:sanctum');
 
+Route::put('/appointments/request/{id}', [AppointmentController::class, 'updateAppointmentStatus'])->middleware('auth:sanctum', 'isProvider');
 
+ Route::get('/customer/appointments/accepted', [AppointmentController::class, 'getAcceptedAppointmentsForCustomer'])->middleware('auth:sanctum');
 
-
+Route::get('/appointments/provider/accepted', [AppointmentController::class, 'getAcceptedAppointmentsForProvider'])->middleware('auth:sanctum', 'isProvider');
 
 
