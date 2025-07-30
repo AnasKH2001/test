@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 class AppointmentController extends Controller
 {
 
+
+    //حجز موعد من قبل الزبون
 public function requestAppointment(Request $request)
 {
     $request->validate([
@@ -35,7 +37,7 @@ public function requestAppointment(Request $request)
     $appointment = Appointment::create([
         'service_id' => $service->id,
         'provider_id' => $service->provider_id,
-        'customer_id' => $user->customer->id,  // استخدام ID من جدول customers
+        'customer_id' => $user->customer->id,  
         'appointment_date' => $request->appointment_date,
         'start_time' => $request->start_time,
         'end_time' => $request->end_time,
@@ -50,6 +52,8 @@ public function requestAppointment(Request $request)
 }
 
 
+
+//قبول و رفض ....الموعد  من قبل المزود
 public function updateAppointmentStatus(Request $request, $id)
 {
     $user = auth()->user();
@@ -60,7 +64,6 @@ public function updateAppointmentStatus(Request $request, $id)
         return response()->json(['message' => 'Appointment not found'], 404);
     }
 
-    // تحقق إذا المستخدم هو مزود الخدمة لهذا الموعد
     if ($user->provider && $appointment->provider_id === $user->provider->id) {
         $appointment->status = $request->input('status');
         $appointment->save();
@@ -69,21 +72,23 @@ public function updateAppointmentStatus(Request $request, $id)
     }
 
     return response()->json(['message' => 'Unauthorized to update this appointment'], 403);
+
+
 }
+
+//ارجاع المواعيد التي تم قبولها للزبون
 public function getAcceptedAppointmentsForCustomer()
 {
     $user = Auth::user();
 
-    // تحقق أن المستخدم لديه ملف زبون
     if (!$user || !$user->customer) {
         return response()->json(['message' => 'No customer profile found.'], 404);
     }
 
-    // جلب المواعيد مع معلومات الخدمة، المزود (مع المستخدم)، والزبون (مع المستخدم)
     $appointments = Appointment::with([
             'service',
-            'provider.user',  // اسم المزود
-            'customer.user'   // اسم الزبون
+            'provider.user',  
+            'customer.user'   
         ])
         ->where('customer_id', $user->customer->id)
         ->where('status', 'accepted')
@@ -101,20 +106,19 @@ public function getAcceptedAppointmentsForCustomer()
 
 
 
+//ارجاع المواعيد التي تم قبولها للمزود
 public function getAcceptedAppointmentsForProvider()
 {
     $user = Auth::user();
 
-    // تحقق أن المستخدم لديه ملف مزود
     if (!$user || !$user->provider) {
         return response()->json(['message' => 'No provider profile found.'], 404);
     }
 
-    // جلب المواعيد مع معلومات الخدمة والزبون والمزود
     $appointments = Appointment::with([
             'service',
-            'customer.user',   // اسم الزبون
-            'provider.user'    // اسم المزود
+            'customer.user',   
+            'provider.user'    
         ])
         ->where('provider_id', $user->provider->id)
         ->where('status', 'accepted')
@@ -129,4 +133,30 @@ public function getAcceptedAppointmentsForProvider()
         'data' => $appointments
     ]);
 }
+
+
+// حذف الموعد من قبل الزبون
+public function deleteAppointment($id)
+{
+    $user = Auth::user();
+
+    if (!$user || !$user->customer) {
+        return response()->json(['message' => 'No customer profile found.'], 404);
+    }
+
+    $appointment = Appointment::where('id', $id)
+        ->where('customer_id', $user->customer->id)
+        ->first();
+
+    if (!$appointment) {
+        return response()->json(['message' => 'Appointment not found or does not belong to this customer.'], 404);
+    }
+
+    $appointment->delete();
+
+    return response()->json([
+        'message' => 'Appointment deleted successfully.'
+    ]);
+}
+
 }

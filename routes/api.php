@@ -54,3 +54,5 @@ Route::put('/appointments/request/{id}', [AppointmentController::class, 'updateA
 Route::get('/appointments/provider/accepted', [AppointmentController::class, 'getAcceptedAppointmentsForProvider'])->middleware('auth:sanctum', 'isProvider');
 
 
+Route::delete('/appointments/{id}', [AppointmentController::class, 'deleteAppointment'])
+->middleware('auth:sanctum');
