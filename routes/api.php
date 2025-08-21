@@ -56,3 +56,6 @@ Route::get('/appointments/provider/accepted', [AppointmentController::class, 'ge
 
 Route::delete('/appointments/{id}', [AppointmentController::class, 'deleteAppointment'])
 ->middleware('auth:sanctum');
+Route::get('/appointments/provider/pending', [AppointmentController::class, 'getPendingAppointmentsForProvider'])
+    ->middleware('auth:sanctum', 'isProvider');
+ Route::get('/customer/appointments/Pending', [AppointmentController::class, 'getPendingAppointmentsForCustomer'])->middleware('auth:sanctum');

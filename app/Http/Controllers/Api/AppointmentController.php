@@ -159,4 +159,61 @@ public function deleteAppointment($id)
     ]);
 }
 
+
+//ارجاع المواعيد المعلقة للمزود
+public function getPendingAppointmentsForProvider()
+{
+    $user = Auth::user();
+
+    if (!$user || !$user->provider) {
+        return response()->json(['message' => 'No provider profile found.'], 404);
+    }
+
+    $appointments = Appointment::with([
+            'service',
+            'customer.user',   
+            'provider.user'    
+        ])
+        ->where('provider_id', $user->provider->id)
+        ->where('status', 'pending')
+        ->get();
+
+    if ($appointments->isEmpty()) {
+        return response()->json(['message' => 'No pending appointments found for this provider.'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Pending appointments fetched successfully',
+        'data' => $appointments
+    ]);
+}
+
+
+public function getPendingAppointmentsForCustomer()
+{
+    $user = Auth::user();
+
+    if (!$user || !$user->customer) {
+        return response()->json(['message' => 'No customer profile found.'], 404);
+    }
+
+    $appointments = Appointment::with([
+            'service',
+            'provider.user',  
+            'customer.user'   
+        ])
+        ->where('customer_id', $user->customer->id)
+        ->where('status', 'pending')
+        ->get();
+
+    if ($appointments->isEmpty()) {
+        return response()->json(['message' => 'No accepted appointments found for this customer.'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Accepted appointments fetched successfully',
+        'data' => $appointments
+    ]);
+}
+
 }
